@@ -19,6 +19,9 @@
 
       <label >Skills:</label>
       <input type="text" v-model="tempSkills" @keyup="addskill">
+      <div v-for="skill in skills" :key="skill" class="pill">
+          {{ skill }}
+      </div>
   </form>
 
   <p>Email: {{ email }}</p>
@@ -42,7 +45,9 @@ export default {
    methods: {
        addskill(e) {
            if (e.key === ',' && this.tempSkills) {
+               if (!this.skills.includes(this.tempSkills)){
                this.skills.push(this.tempSkills)
+               }
                this.tempSkills = ''
            }
        }
