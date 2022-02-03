@@ -1,10 +1,11 @@
 <template>
-  <form>
+  <form @submit.prevent="handleSubmit">
       <label>Email:</label>
       <input type="email" required v-model="email">
 
       <label>Password:</label>
       <input type="password" required v-model="password">
+      <div v-if="passwordError" class="error">{{ passwordError }}</div>
 
       <label>Role</label>
       <select v-model="role">
@@ -20,7 +21,11 @@
       <label >Skills:</label>
       <input type="text" v-model="tempSkills" @keyup="addskill">
       <div v-for="skill in skills" :key="skill" class="pill">
-          {{ skill }}
+          <span @click="deleteskill (skill)">{{ skill }}</span>
+      </div>
+
+      <div class="submit">
+          <button>Create an Account</button>
       </div>
   </form>
 
@@ -39,17 +44,27 @@ export default {
             role: '',
             terms:'false',
             tempSkills:'',
-            skills: []
+            skills: [],
+            passwordError: ''
         }
     },
    methods: {
        addskill(e) {
-           if (e.key === ',' && this.tempSkills) {
-               if (!this.skills.includes(this.tempSkills)){
-               this.skills.push(this.tempSkills)
+           if (e.key === ',' && this.tempSkills !== ",") {
+                let strToAdd = this.tempSkills.substring(0, this.tempSkills.length - 1);
+
+               if (!this.skills.includes(strToAdd)){
+                    this.skills.push(strToAdd)
                }
                this.tempSkills = ''
            }
+       },
+       deleteskill(skill) {
+            this.skills = this.skills.filter(item => item != skill) 
+       },
+       handleSubmit() {
+         //validate password
+         this.passwordError = this.password.length > 5 ? '': 'password must be at least 6 chars long'
        }
    }
 }
@@ -99,5 +114,35 @@ input[type="checkbox"] {
     margin: 0 10px 0 0;
     position: relative;
     top: 2px;
+}
+.pill {
+    display: inline-block;
+    margin: 20px 10px 0 0;
+    padding: 6px 12px;
+    background: #eee;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+button {
+    background: #0b6dff;
+    border: 0;
+    padding: 12px 20px;
+    margin-top: 20px;
+    color: white;
+    border-radius: 20px;
+    font-size: 15px;
+}
+
+.submit {
+    text-align: center;
+}
+
+.error {
+    color: tomato;
 }
 </style>
